@@ -1,3 +1,4 @@
+// Arquitetura e Organização de computadores II - Fabiane e Gabriel
 `include "processor.sv"
 `include "peripheral.sv"
 
@@ -6,8 +7,12 @@
 
 module testbench;
 	// Inputs
-	reg clkCPU, clkP1, clkP2, reset;
-
+	reg clkCPU;
+  	reg clkP1;
+  	reg clkP2;
+  	reg reset;
+  
+	// Outputs
   	wire ACK1;
   	wire ACK2;
 	wire SEND1;
@@ -16,8 +21,7 @@ module testbench;
   	wire [15:0] DATA2;
 
 
-
-  //Instantiate the Unit Under Test (UUT) - processor
+  // Instantiate the Unit Under Test (UUT) - processor
 	processorFSM uutCPU(
      	.ack1(ACK1),   
      	.ack2(ACK2),
@@ -29,45 +33,45 @@ module testbench;
 		.rst(reset)
 	);
 
-  //Instantiate the Unit Under Test (UUT) - peripherical 1
+  // Instantiate the Unit Under Test (UUT) - peripherical 1
 	peripheralFSM uutPeripheral1(
       	.send(SEND1),  
       	.clk(clkP1),  
       	.rst(reset),
-    	.dataP(DATA1),
+    	.data(DATA1),
       	.outack(ACK1)
 	);
   
-  //Instantiate the Unit Under Test (UUT) - peripherical 2
+  // Instantiate the Unit Under Test (UUT) - peripherical 2
 	peripheralFSM uutPeripheral2(
       	.send(SEND2),  
       	.clk(clkP2),  
       	.rst(reset),
-    	.dataP(DATA2),
+    	.data(DATA2),
      	.outack(ACK2)
 	);
 
-initial begin
-	$dumpfile("dump.vcd");
-	$dumpvars;
+	initial begin
+		$dumpfile("dump.vcd");
+		$dumpvars;
 
-	// Initialize Inputs
-	clkP1 = 0;  
-	clkP2 = 0;
-  	clkCPU = 0;
-	reset = 1;      
-  
-	// Wait 100 ns for global reset to finish
-	#50;
-	reset = 0;
-
-  	#100;
+		// Initialize Inputs
+		clkP1 = 0;  
+		clkP2 = 0;
+  		clkCPU = 0;
+		reset = 1;
   	
-	$finish;
-end  
+		// Wait 100 ns for global reset to finish
+		#100;
+		reset = 0;
+      	#100;
+  	
+		$finish;
+	end  
 
-always #17 clkP1 = !clkP1;
-always #8 clkP2 = !clkP2;
-always #10 clkCPU = !clkCPU;
+  	// Clock configuration
+	always #17 clkP1 = !clkP1;
+	always #8 clkP2 = !clkP2;
+	always #10 clkCPU = !clkCPU;
   
 endmodule
